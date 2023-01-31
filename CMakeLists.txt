@@ -12,18 +12,31 @@ find_package(spdlog CONFIG REQUIRED)
 include(CTest)
 enable_testing()
 
-file(GLOB COMMON_SRC_FILES ${PROJECT_SOURCE_DIR}/common/src/*.cpp)
+# common library begin
+file(GLOB COMMON_SRC_FILES ${PROJECT_SOURCE_DIR}/common/*.cpp)
 add_library(common ${COMMON_SRC_FILES})
 target_include_directories(common
     PUBLIC ${PROJECT_SOURCE_DIR}/common
 )
-target_link_libraries(common
-    PUBLIC spdlog::spdlog_header_only
+target_link_libraries(common PUBLIC
+    spdlog::spdlog_header_only
 )
+# common library end
 
-add_executable(FollowGameEngine main.cpp)
-target_link_libraries(FollowGameEngine PRIVATE
+# hazel library begin
+file(GLOB HAZEL_SRC_FILES ${PROJECT_SOURCE_DIR}/hazel/*.cpp)
+add_library(hazel SHARED ${HAZEL_SRC_FILES})
+target_include_directories(hazel
+    PUBLIC ${PROJECT_SOURCE_DIR}/hazel
+)
+target_link_libraries(hazel PUBLIC
     common
+)
+# hazel library end
+
+add_executable(sandbox ${PROJECT_SOURCE_DIR}/sandbox/main.cpp)
+target_link_libraries(sandbox PRIVATE
+    hazel
 )
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

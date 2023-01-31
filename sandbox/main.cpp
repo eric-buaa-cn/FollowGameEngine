@@ -1,7 +1,9 @@
 #include <MyLogger.h>
 MYLOG_INIT
 
+#include <Hazel.h>
+
 int main() {
-    MYLOG_INFO("hello world");
+    hazel::print("hello world");
     return 0;
 }

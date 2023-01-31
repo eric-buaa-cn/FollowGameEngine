@@ -34,8 +34,11 @@ target_link_libraries(hazel PUBLIC
 )
 # hazel library end
 
-add_executable(sandbox ${PROJECT_SOURCE_DIR}/sandbox/main.cpp)
-target_link_libraries(sandbox PRIVATE
+add_executable(playground ${PROJECT_SOURCE_DIR}/playground/main.cpp)
+target_include_directories(playground PRIVATE
+    ${PROJECT_SOURCE_DIR}/playground
+)
+target_link_libraries(playground PRIVATE
     hazel
 )
 

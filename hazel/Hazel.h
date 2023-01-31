@@ -1,8 +1,7 @@
 #pragma once
 
-#include <string>
+/*
+Hazel.h is the header file for client to include.
+*/
 
-namespace hazel
-{
-    void print(std::string message);
-} // namespace hazel
+#include <Application.h>

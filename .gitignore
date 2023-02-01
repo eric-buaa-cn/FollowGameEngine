@@ -2,3 +2,5 @@
 build/
 build-xcode/
 common/common/
+
+.DS_Store

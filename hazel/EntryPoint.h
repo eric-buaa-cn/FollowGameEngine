@@ -1,5 +1,8 @@
 #include <Application.h>
 
+#include <MyLogger.h>
+MYLOG_INIT
+
 /*
 EntryPoint.h is the entry point for client easy to use.
 */

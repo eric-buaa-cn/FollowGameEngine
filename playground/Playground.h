@@ -1,5 +1,7 @@
 #include <Hazel.h>
 
+#include <MyLogger.h>
+
 class Playground : public ::hazel::Application {
 public:
     Playground() {
@@ -8,4 +10,7 @@ public:
     ~Playground() {
     }
 
+    void Run() override {
+        MYLOG_INFO("Hello playground!");
+    }
 };

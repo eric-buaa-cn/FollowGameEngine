@@ -4,6 +4,10 @@
 
 #include <Window.h>
 
+#include <ApplicationEvent.h>
+#include <KeyEvent.h>
+#include <MouseEvent.h>
+
 namespace hazel
 {
     class Application {
@@ -11,7 +15,11 @@ namespace hazel
             Application();
             virtual ~Application();
 
-            virtual void Run();
+            void Run();
+            void OnEvent(Event &);
+        private:
+            bool OnWindowClose(WindowCloseEvent &);
+
         private:
             std::unique_ptr<Window> m_Window;
             bool m_Running = true;

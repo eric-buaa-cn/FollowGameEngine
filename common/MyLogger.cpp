@@ -15,6 +15,6 @@ MyLogger::MyLogger() {
     // auto logger = spdlog::rotating_logger_mt("file_logger", "mylog.txt", 1024 * 1024 * 5, 3);
 
     // Contorl the log level at runtime.
-    logger->set_level(spdlog::level::info);
+    logger->set_level(spdlog::level::trace);
     spdlog::set_default_logger(logger);
 }

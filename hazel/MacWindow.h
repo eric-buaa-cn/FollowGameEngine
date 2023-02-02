@@ -26,7 +26,9 @@ namespace hazel {
 		bool IsVSync() const override;
 	private:
 		virtual void Init(const WindowProps& props);
+		virtual void InitGLFWCallbacks();
 		virtual void Shutdown();
+
 	private:
 		GLFWwindow* m_Window;
 

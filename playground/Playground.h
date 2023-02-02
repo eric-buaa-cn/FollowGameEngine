@@ -9,11 +9,4 @@ public:
 
     ~Playground() {
     }
-
-    void Run() override {
-        MYLOG_INFO("Hello playground!");
-
-        hazel::WindowResizeEvent e(100, 200);
-        MYLOG_INFO(e.ToString());
-    }
 };

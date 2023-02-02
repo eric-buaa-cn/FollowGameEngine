@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 project(FollowGameEngine VERSION 0.1.0)
 
+add_definitions(-DHZ_ENABLE_ASSERTS)
+
 set(CMAKE_C_COMPILER "clang")
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_COMPILER "clang++")
@@ -8,6 +10,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -msse2")
 
 find_package(spdlog CONFIG REQUIRED)
+find_package(glad CONFIG REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
 
 include(CTest)
 enable_testing()
@@ -30,6 +34,8 @@ target_include_directories(hazel
     PUBLIC ${PROJECT_SOURCE_DIR}/hazel
 )
 target_link_libraries(hazel PUBLIC
+    glad::glad
+    glfw
     common
 )
 target_precompile_headers(hazel PRIVATE ${PROJECT_SOURCE_DIR}/hazel/pch.h)

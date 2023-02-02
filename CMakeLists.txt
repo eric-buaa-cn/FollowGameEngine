@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.16)
 project(FollowGameEngine VERSION 0.1.0)
 
 set(CMAKE_C_COMPILER "clang")
@@ -32,6 +32,7 @@ target_include_directories(hazel
 target_link_libraries(hazel PUBLIC
     common
 )
+target_precompile_headers(hazel PRIVATE ${PROJECT_SOURCE_DIR}/hazel/pch.h)
 # hazel library end
 
 add_executable(playground ${PROJECT_SOURCE_DIR}/playground/main.cpp)

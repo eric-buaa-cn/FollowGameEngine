@@ -8,6 +8,8 @@
 #include <KeyEvent.h>
 #include <MouseEvent.h>
 
+#include <LayerStack.h>
+
 namespace hazel
 {
     class Application {
@@ -17,12 +19,17 @@ namespace hazel
 
             void Run();
             void OnEvent(Event &);
+
+            void PushLayer(Layer* layer);
+            void PushOverlay(Layer* layer);
         private:
             bool OnWindowClose(WindowCloseEvent &);
 
         private:
             std::unique_ptr<Window> m_Window;
             bool m_Running = true;
+
+            LayerStack m_LayerStack;
     };
 
     Application *CreateApplication();

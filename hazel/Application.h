@@ -1,6 +1,6 @@
 #pragma once
 
-#include <memory>
+#include <pch.h>
 
 #include <Window.h>
 
@@ -22,12 +22,18 @@ namespace hazel
 
             void PushLayer(Layer* layer);
             void PushOverlay(Layer* layer);
+
+            inline const Window &GetWindow() const { return *m_Window; }
+            inline static const Application &Get() { return *s_app; }
+
         private:
             bool OnWindowClose(WindowCloseEvent &);
 
         private:
             std::unique_ptr<Window> m_Window;
             bool m_Running = true;
+
+            static const Application *s_app;
 
             LayerStack m_LayerStack;
     };

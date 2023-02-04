@@ -1,22 +1,23 @@
 #include <Application.h>
 
-#include <memory>
-#include <functional>
+#include <pch.h>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <Core.h>
 #include <MyLogger.h>
-
-#define BIND_MEM_FUN(c, f) std::bind(&c::f, this, std::placeholders::_1)
 
 namespace hazel
 {
+    const Application *Application::s_app = nullptr;
+    
     Application::Application()
     {
+        s_app = this;
         m_Window = std::unique_ptr<Window>(Window::Create());
 
-        m_Window->SetEventCallback(BIND_MEM_FUN(Application, OnEvent));
+        m_Window->SetEventCallback(HZ_BIND_EVENT_FN(Application::OnEvent));
     }
 
     Application::~Application()
@@ -40,7 +41,7 @@ namespace hazel
     void Application::OnEvent(Event &e)
     {
         EventDispatcher dispatcher(e);
-        dispatcher.Dispatch<WindowCloseEvent>(BIND_MEM_FUN(Application, OnWindowClose));
+        dispatcher.Dispatch<WindowCloseEvent>(HZ_BIND_EVENT_FN(Application::OnWindowClose));
 
         for (auto it = m_LayerStack.end(); it != m_LayerStack.begin(); )
         {
@@ -49,7 +50,7 @@ namespace hazel
                 break;
         }
         
-        MYLOG_TRACE("{0}", e.ToString());
+        // MYLOG_TRACE("{0}", e.ToString());
     }
 
     void Application::PushLayer(Layer* layer)

@@ -1,7 +1,6 @@
 #pragma once
 
-#include <string>
-#include <functional>
+#include <pch.h>
 
 #include <Core.h>            // for BIT(x) macro
 

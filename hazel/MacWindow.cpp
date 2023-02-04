@@ -167,4 +167,8 @@ namespace hazel {
         return m_Data.VSync;
     }
 
+    void *MacWindow::GetNativeWindow() const
+    {
+        return m_Window;
+    }
 }

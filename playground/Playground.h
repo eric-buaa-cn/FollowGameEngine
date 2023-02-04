@@ -10,10 +10,11 @@ class Layer1 : public Layer {
 public:
     void OnEvent(Event& event) override {
         MYLOG_INFO("layer1 {0}", event.ToString());
+        // event.Handled = true;
     }
 
     void OnUpdate() override {
-        MYLOG_INFO("layer1 OnUpdate");
+        // MYLOG_INFO("layer1 OnUpdate");
     }
 };
 
@@ -21,18 +22,20 @@ class Layer2 : public Layer {
 public:
     void OnEvent(Event& event) override {
         MYLOG_INFO("layer2 {0}", event.ToString());
+        // event.Handled = true;
     }
 
     void OnUpdate() override {
-        MYLOG_INFO("layer2 OnUpdate");
+        // MYLOG_INFO("layer2 OnUpdate");
     }
 };
 
 class Playground : public ::hazel::Application {
 public:
     Playground() {
-        PushLayer(new Layer1());
-        PushLayer(new Layer2());
+        // PushLayer(new Layer1());
+        // PushLayer(new Layer2());
+        PushLayer(new ::hazel::ImGuiLayer());
     }
 
     ~Playground() {

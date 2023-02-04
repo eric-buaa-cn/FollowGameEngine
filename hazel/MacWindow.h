@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <pch.h>
 
 #include <Window.h>
 
@@ -24,6 +24,8 @@ namespace hazel {
         inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
         void SetVSync(bool enabled) override;
         bool IsVSync() const override;
+
+        void* GetNativeWindow() const override;
     private:
         virtual void Init(const WindowProps& props);
         virtual void InitGLFWCallbacks();

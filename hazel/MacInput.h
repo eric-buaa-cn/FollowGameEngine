@@ -2,7 +2,8 @@
 
 #include <Input.h>
 
-namespace hazel {
+namespace hazel
+{
 
     class WindowsInput : public Input
     {

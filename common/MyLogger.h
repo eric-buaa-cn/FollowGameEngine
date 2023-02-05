@@ -18,15 +18,16 @@ MYLOG_INFO("hello world");
 MYLOG_INFO("your name is {} and {} years old", "jack", 10);
 
 */
-class MyLogger {
+class MyLogger
+{
 public:
     MyLogger();
 };
 
 #define MYLOG_INIT MyLogger ini;
 
-#define MYLOG_TRACE(...)  SPDLOG_TRACE(__VA_ARGS__)
-#define MYLOG_DEBUG(...)  SPDLOG_DEBUG(__VA_ARGS__)
-#define MYLOG_INFO(...)   SPDLOG_INFO(__VA_ARGS__)
-#define MYLOG_WARN(...)   SPDLOG_WARN(__VA_ARGS__)
-#define MYLOG_ERROR(...)  SPDLOG_ERROR(__VA_ARGS__)
+#define MYLOG_TRACE(...) SPDLOG_TRACE(__VA_ARGS__)
+#define MYLOG_DEBUG(...) SPDLOG_DEBUG(__VA_ARGS__)
+#define MYLOG_INFO(...) SPDLOG_INFO(__VA_ARGS__)
+#define MYLOG_WARN(...) SPDLOG_WARN(__VA_ARGS__)
+#define MYLOG_ERROR(...) SPDLOG_ERROR(__VA_ARGS__)

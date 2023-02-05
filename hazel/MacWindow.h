@@ -7,14 +7,15 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-namespace hazel {
-    
+namespace hazel
+{
+
     class GraphicsContext;
 
     class MacWindow : public Window
     {
     public:
-        MacWindow(const WindowProps& props);
+        MacWindow(const WindowProps &props);
         virtual ~MacWindow();
 
         void OnUpdate() override;
@@ -23,18 +24,19 @@ namespace hazel {
         inline uint32_t GetHeight() const override { return m_Data.Height; }
 
         // Window attributes
-        inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
+        inline void SetEventCallback(const EventCallbackFn &callback) override { m_Data.EventCallback = callback; }
         void SetVSync(bool enabled) override;
         bool IsVSync() const override;
 
-        void* GetNativeWindow() const override;
+        void *GetNativeWindow() const override;
+
     private:
-        virtual void Init(const WindowProps& props);
+        virtual void Init(const WindowProps &props);
         virtual void InitGLFWCallbacks();
         virtual void Shutdown();
 
     private:
-        GLFWwindow* m_Window;
+        GLFWwindow *m_Window;
         GraphicsContext *m_Context;
 
         struct WindowData

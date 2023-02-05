@@ -3,7 +3,8 @@
 #include <Event.h>
 #include <KeyCodes.h>
 
-namespace hazel {
+namespace hazel
+{
 
     class KeyEvent : public Event
     {

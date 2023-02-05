@@ -5,7 +5,8 @@
 
 #include <Event.h>
 
-namespace hazel {
+namespace hazel
+{
 
     struct WindowProps
     {
@@ -13,7 +14,7 @@ namespace hazel {
         uint32_t Width;
         uint32_t Height;
 
-        WindowProps(const std::string& title = "Hazel Engine",
+        WindowProps(const std::string &title = "Hazel Engine",
                     uint32_t width = 1280,
                     uint32_t height = 720)
             : Title(title), Width(width), Height(height)
@@ -25,7 +26,7 @@ namespace hazel {
     class Window
     {
     public:
-        using EventCallbackFn = std::function<void(Event&)>;
+        using EventCallbackFn = std::function<void(Event &)>;
 
         virtual ~Window() {}
 
@@ -35,13 +36,13 @@ namespace hazel {
         virtual uint32_t GetHeight() const = 0;
 
         // Window attributes
-        virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
+        virtual void SetEventCallback(const EventCallbackFn &callback) = 0;
         virtual void SetVSync(bool enabled) = 0;
         virtual bool IsVSync() const = 0;
 
-        virtual void* GetNativeWindow() const = 0;
+        virtual void *GetNativeWindow() const = 0;
 
-        static Window* Create(const WindowProps& props = WindowProps());
+        static Window *Create(const WindowProps &props = WindowProps());
     };
 
 }

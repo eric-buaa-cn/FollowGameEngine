@@ -7,16 +7,17 @@
 
 #include <OpenGLContext.h>
 
-namespace hazel {
-    
+namespace hazel
+{
+
     static bool s_GLFWInitialized = false;
 
-    Window* Window::Create(const WindowProps& props)
+    Window *Window::Create(const WindowProps &props)
     {
         return new MacWindow(props);
     }
 
-    MacWindow::MacWindow(const WindowProps& props)
+    MacWindow::MacWindow(const WindowProps &props)
     {
         Init(props);
     }
@@ -26,7 +27,7 @@ namespace hazel {
         Shutdown();
     }
 
-    void MacWindow::Init(const WindowProps& props)
+    void MacWindow::Init(const WindowProps &props)
     {
         m_Data.Title = props.Title;
         m_Data.Width = props.Width;
@@ -63,25 +64,23 @@ namespace hazel {
     void MacWindow::InitGLFWCallbacks()
     {
         // Set GLFW callbacks
-        glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
-        {
+        glfwSetWindowSizeCallback(m_Window, [](GLFWwindow *window, int width, int height)
+                                  {
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
             data.Width = width;
             data.Height = height;
 
             WindowResizeEvent event(width, height);
-            data.EventCallback(event);
-        });
+            data.EventCallback(event); });
 
-        glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
-        {
+        glfwSetWindowCloseCallback(m_Window, [](GLFWwindow *window)
+                                   {
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
             WindowCloseEvent event;
-            data.EventCallback(event);
-        });
+            data.EventCallback(event); });
 
-        glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
-        {
+        glfwSetKeyCallback(m_Window, [](GLFWwindow *window, int key, int scancode, int action, int mods)
+                           {
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
             switch (action)
@@ -104,11 +103,10 @@ namespace hazel {
                     data.EventCallback(event);
                     break;
                 }
-            }
-        });
+            } });
 
-        glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
-        {
+        glfwSetMouseButtonCallback(m_Window, [](GLFWwindow *window, int button, int action, int mods)
+                                   {
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
             switch (action)
@@ -125,24 +123,21 @@ namespace hazel {
                     data.EventCallback(event);
                     break;
                 }
-            }
-        });
+            } });
 
-        glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
-        {
+        glfwSetScrollCallback(m_Window, [](GLFWwindow *window, double xOffset, double yOffset)
+                              {
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
             MouseScrollEvent event((float)xOffset, (float)yOffset);
-            data.EventCallback(event);
-        });
+            data.EventCallback(event); });
 
-        glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
-        {
+        glfwSetCursorPosCallback(m_Window, [](GLFWwindow *window, double xPos, double yPos)
+                                 {
             WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
             MouseMoveEvent event((float)xPos, (float)yPos);
-            data.EventCallback(event);
-        });
+            data.EventCallback(event); });
     }
 
     void MacWindow::Shutdown()

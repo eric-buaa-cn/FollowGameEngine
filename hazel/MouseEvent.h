@@ -3,7 +3,8 @@
 #include <Event.h>
 #include <MouseCodes.h>
 
-namespace hazel {
+namespace hazel
+{
 
     class MouseMoveEvent : public Event
     {

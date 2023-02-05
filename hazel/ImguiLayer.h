@@ -6,7 +6,8 @@
 #include <MouseEvent.h>
 #include <ApplicationEvent.h>
 
-namespace hazel {
+namespace hazel
+{
 
     class ImGuiLayer : public Layer
     {

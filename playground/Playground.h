@@ -5,38 +5,47 @@
 using ::hazel::Event;
 using ::hazel::Layer;
 
-class Layer1 : public Layer {
+class Layer1 : public Layer
+{
 public:
-    void OnEvent(Event& event) override {
+    void OnEvent(Event &event) override
+    {
         MYLOG_TRACE("{0}", event.ToString());
     }
 
-    void OnImGuiRender() override {
+    void OnImGuiRender() override
+    {
         ImGui::Begin("test");
         ImGui::Text("hello world");
         ImGui::End();
     }
 };
 
-class Layer2 : public Layer {
+class Layer2 : public Layer
+{
 public:
-    void OnEvent(Event& event) override {
+    void OnEvent(Event &event) override
+    {
         MYLOG_INFO("layer2 {0}", event.ToString());
         // event.Handled = true;
     }
 
-    void OnUpdate() override {
+    void OnUpdate() override
+    {
         // MYLOG_INFO("layer2 OnUpdate");
     }
 };
 
-class Playground : public ::hazel::Application {
+class Playground : public ::hazel::Application
+{
 public:
-    Playground() {
+    Playground()
+    {
         PushLayer(new Layer1());
         // PushLayer(new Layer2());
     }
 
-    ~Playground() {
+    ~Playground()
+    {
     }
 };

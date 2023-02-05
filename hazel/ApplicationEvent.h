@@ -4,7 +4,8 @@
 
 #include <Event.h>
 
-namespace hazel {
+namespace hazel
+{
 
     class WindowResizeEvent : public Event
     {

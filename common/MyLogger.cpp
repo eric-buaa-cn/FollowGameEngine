@@ -5,7 +5,8 @@
 // This header is related to file rotating logger.
 // #include <spdlog/sinks/rotating_file_sink.h>
 
-MyLogger::MyLogger() {
+MyLogger::MyLogger()
+{
     spdlog::set_pattern("[%Y-%m-%d %T.%e] [%n] [%^%L%$] [%s:%#:%!] [thread %t] %v");
 
     // This line creates a console logger.

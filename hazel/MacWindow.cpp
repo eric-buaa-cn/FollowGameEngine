@@ -5,6 +5,8 @@
 #include <KeyEvent.h>
 #include <MouseEvent.h>
 
+#include <OpenGLContext.h>
+
 namespace hazel {
     
     static bool s_GLFWInitialized = false;
@@ -48,8 +50,10 @@ namespace hazel {
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
         m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-        glfwMakeContextCurrent(m_Window);
-        gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+
+        m_Context = new OpenGLContext(m_Window);
+        m_Context->Init();
+
         glfwSetWindowUserPointer(m_Window, &m_Data);
         SetVSync(true);
 
@@ -143,13 +147,14 @@ namespace hazel {
 
     void MacWindow::Shutdown()
     {
+        delete m_Context;
         glfwDestroyWindow(m_Window);
     }
 
     void MacWindow::OnUpdate()
     {
         glfwPollEvents();
-        glfwSwapBuffers(m_Window);
+        m_Context->SwapBuffers();
     }
 
     void MacWindow::SetVSync(bool enabled)

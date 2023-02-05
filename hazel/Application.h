@@ -10,6 +10,8 @@
 
 #include <LayerStack.h>
 
+#include <ImguiLayer.h>
+
 namespace hazel
 {
     class Application {
@@ -32,6 +34,8 @@ namespace hazel
         private:
             std::unique_ptr<Window> m_Window;
             bool m_Running = true;
+
+            ImGuiLayer *m_ImGuiLayer;
 
             static const Application *s_app;
 

@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.16)
 project(FollowGameEngine VERSION 0.1.0)
 
-add_definitions(-DHZ_ENABLE_ASSERTS)
+add_definitions(-DHZ_ENABLE_ASSERTS -DIMGUI_IMPL_OPENGL_LOADER_CUSTOM)
+add_definitions(-DGLFW_INCLUDE_NONE)
 
 set(CMAKE_C_COMPILER "clang")
 set(CMAKE_C_STANDARD 17)
@@ -12,6 +13,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -msse2")
 find_package(spdlog CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
+find_package(glm CONFIG REQUIRED)
 find_package(imgui CONFIG REQUIRED)
 
 include(CTest)
@@ -33,7 +35,7 @@ file(GLOB HAZEL_SRC_FILES
     ${PROJECT_SOURCE_DIR}/hazel/*.cpp
     ${PROJECT_SOURCE_DIR}/hazel/imgui/*.cpp
 )
-add_library(hazel SHARED ${HAZEL_SRC_FILES})
+add_library(hazel ${HAZEL_SRC_FILES})
 target_include_directories(hazel
     PUBLIC ${PROJECT_SOURCE_DIR}/hazel
     PUBLIC ${PROJECT_SOURCE_DIR}/hazel/imgui
@@ -43,6 +45,7 @@ target_link_libraries(hazel PUBLIC
     glfw
     common
     imgui::imgui
+    glm::glm
 )
 target_precompile_headers(hazel PRIVATE ${PROJECT_SOURCE_DIR}/hazel/pch.h)
 # hazel library end

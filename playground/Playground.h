@@ -1,7 +1,6 @@
 #include <Hazel.h>
 
-#include <MyLogger.h>
-#include <Layer.h>
+#include <imgui.h>
 
 using ::hazel::Event;
 using ::hazel::Layer;
@@ -9,12 +8,13 @@ using ::hazel::Layer;
 class Layer1 : public Layer {
 public:
     void OnEvent(Event& event) override {
-        MYLOG_INFO("layer1 {0}", event.ToString());
-        // event.Handled = true;
+        MYLOG_TRACE("{0}", event.ToString());
     }
 
-    void OnUpdate() override {
-        // MYLOG_INFO("layer1 OnUpdate");
+    void OnImGuiRender() override {
+        ImGui::Begin("test");
+        ImGui::Text("hello world");
+        ImGui::End();
     }
 };
 
@@ -33,9 +33,8 @@ public:
 class Playground : public ::hazel::Application {
 public:
     Playground() {
-        // PushLayer(new Layer1());
+        PushLayer(new Layer1());
         // PushLayer(new Layer2());
-        PushLayer(new ::hazel::ImGuiLayer());
     }
 
     ~Playground() {

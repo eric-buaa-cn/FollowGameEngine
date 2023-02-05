@@ -8,6 +8,8 @@
 #include <GLFW/glfw3.h>
 
 namespace hazel {
+    
+    class GraphicsContext;
 
     class MacWindow : public Window
     {
@@ -33,6 +35,7 @@ namespace hazel {
 
     private:
         GLFWwindow* m_Window;
+        GraphicsContext *m_Context;
 
         struct WindowData
         {

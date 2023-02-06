@@ -24,7 +24,7 @@ namespace hazel
 
     void LayerStack::PopLayer(Layer *layer)
     {
-        auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
+        auto it = std::find(m_Layers.begin(), m_Layers.begin() + m_LayerInsertIndex, layer);
         if (it != m_Layers.end())
         {
             layer->OnDetach();
@@ -35,10 +35,12 @@ namespace hazel
 
     void LayerStack::PopOverlay(Layer *overlay)
     {
-        auto it = std::find(m_Layers.begin(), m_Layers.end(), overlay);
+        auto it = std::find(m_Layers.begin() + m_LayerInsertIndex, m_Layers.end(), overlay);
         if (it != m_Layers.end())
+        {
             overlay->OnDetach();
-        m_Layers.erase(it);
+            m_Layers.erase(it);
+        }
     }
 
 }

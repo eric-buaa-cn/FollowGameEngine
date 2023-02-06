@@ -10,6 +10,8 @@
 
 #include <Buffer.h>
 #include <VertexArray.h>
+#include <Render.h>
+#include <RenderCommand.h>
 
 #include <glm/vec3.hpp>                 // glm::vec3
 #include <glm/vec4.hpp>                 // glm::vec4
@@ -139,16 +141,18 @@ namespace hazel
     {
         while (m_Running)
         {
-            glClearColor(0.12f, 0.12f, 0.12f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
+            RenderCommand::SetClearColor(glm::vec4(0.12f, 0.12f, 0.12f, 1.0f));
+            RenderCommand::Clear();
+
+            Renderer::BeginScene();
 
             m_BlueShader->Bind();
-            m_SquareVA->Bind();
-            glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+            Renderer::Submit(m_SquareVA);
 
             m_Shader->Bind();
-            m_VertexArray->Bind();
-            glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+            Renderer::Submit(m_VertexArray);
+
+            Renderer::EndScene();
 
             for (Layer *layer : m_LayerStack)
             {

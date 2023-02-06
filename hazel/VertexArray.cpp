@@ -2,7 +2,7 @@
 #include <OpenGLVertexArray.h>
 
 #include <Core.h>
-#include <Render.h>
+#include <Renderer.h>
 
 namespace hazel
 {

@@ -1,5 +1,7 @@
 #include <Hazel.h>
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <imgui.h>
 
 using ::hazel::Event;
@@ -21,19 +23,143 @@ public:
     }
 };
 
-class Layer2 : public Layer
+class ExampleLayer : public Layer
 {
 public:
-    void OnEvent(Event &event) override
+    ExampleLayer()
+        : Layer("Example"), m_Camera(-1.6f, 1.6f, -0.9f, 0.9f)
     {
-        MYLOG_INFO("layer2 {0}", event.ToString());
-        // event.Handled = true;
+        m_VertexArray.reset(hazel::VertexArray::Create());
+
+        float vertices[] = {
+            -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
+            0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
+            0.0f, 0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f};
+        std::shared_ptr<hazel::VertexBuffer> vertexBuffer;
+        vertexBuffer.reset(hazel::VertexBuffer::Create(vertices, sizeof(vertices)));
+        {
+            hazel::BufferLayout layout = {
+                {hazel::ShaderDataType::Float3, "a_Position", 0},
+                {hazel::ShaderDataType::Float4, "a_Color", 1}};
+
+            vertexBuffer->SetLayout(layout);
+        }
+        m_VertexArray->AddVertexBuffer(vertexBuffer);
+
+        unsigned int indices[3] = {0, 1, 2};
+        std::shared_ptr<hazel::IndexBuffer> indexBuffer;
+        indexBuffer.reset(hazel::IndexBuffer::Create(indices, sizeof(indices) / sizeof(indices[0])));
+        m_VertexArray->SetIndexBuffer(indexBuffer);
+
+        m_SquareVA.reset(hazel::VertexArray::Create());
+
+        float squareVertices[3 * 4] = {
+            -0.5f, -0.5f, 0.0f,
+            0.5f, -0.5f, 0.0f,
+            0.5f, 0.5f, 0.0f,
+            -0.5f, 0.5f, 0.0f};
+
+        std::shared_ptr<hazel::VertexBuffer> squareVB;
+        squareVB.reset(hazel::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+        squareVB->SetLayout({{hazel::ShaderDataType::Float3, "a_Position", 0}});
+        m_SquareVA->AddVertexBuffer(squareVB);
+
+        uint32_t squareIndices[6] = {0, 1, 2, 2, 3, 0};
+        std::shared_ptr<hazel::IndexBuffer> squareIB;
+        squareIB.reset(hazel::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(squareIndices[0])));
+        m_SquareVA->SetIndexBuffer(squareIB);
+
+        std::string vertexSrc = R"(
+            #version 410 core
+            
+            layout(location = 0) in vec3 a_Position;
+            layout(location = 1) in vec4 a_Color;
+
+            out vec4 v_Color;
+
+            uniform mat4 u_ViewProjection;
+            uniform mat4 u_Transform;
+
+            void main()
+            {
+                v_Color = a_Color;
+                gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
+            }
+        )";
+
+        std::string fragmentSrc = R"(
+            #version 410 core
+            
+            out vec4 v_FragColor;
+
+            in vec4 v_Color;
+
+            void main()
+            {
+                v_FragColor = v_Color;
+            }
+        )";
+
+        m_Shader.reset(new hazel::Shader(vertexSrc, fragmentSrc));
+
+        std::string blueShaderVertexSrc = R"(
+            #version 410 core
+            
+            layout(location = 0) in vec3 a_Position;
+
+            uniform mat4 u_ViewProjection;
+            uniform mat4 u_Transform;
+
+            void main()
+            {
+                gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
+            }
+        )";
+
+        std::string blueShaderFragmentSrc = R"(
+            #version 410 core
+            
+            out vec4 color;
+
+            void main()
+            {
+                color = vec4(0.2, 0.3, 0.8, 1.0);
+            }
+        )";
+
+        m_BlueShader.reset(new hazel::Shader(blueShaderVertexSrc, blueShaderFragmentSrc));
     }
 
-    void OnUpdate() override
+    void OnUpdate(hazel::Timestep ts) override
     {
-        // MYLOG_INFO("layer2 OnUpdate");
+        m_Camera.SetPosition({0.5f, 0.5f, 0.0f});
+        m_Camera.SetRotation(45.0f);
+
+        hazel::Renderer::BeginScene(m_Camera);
+        // hazel::Renderer::Submit(m_BlueShader, m_SquareVA);
+        glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+
+        for (int y = 0; y < 20; y++)
+        {
+            for (int x = 0; x < 20; x++)
+            {
+                glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
+                glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+                hazel::Renderer::Submit(m_BlueShader, m_SquareVA, transform);
+            }
+        }
+
+        hazel::Renderer::Submit(m_Shader, m_VertexArray);
+        hazel::Renderer::EndScene();
     }
+
+private:
+    hazel::OrthographicCamera m_Camera;
+    std::shared_ptr<hazel::Shader> m_Shader;
+    std::shared_ptr<hazel::VertexArray> m_VertexArray;
+
+    std::shared_ptr<hazel::Shader> m_BlueShader;
+    std::shared_ptr<hazel::VertexArray> m_SquareVA;
 };
 
 class Playground : public ::hazel::Application
@@ -41,8 +167,7 @@ class Playground : public ::hazel::Application
 public:
     Playground()
     {
-        PushLayer(new Layer1());
-        // PushLayer(new Layer2());
+        PushLayer(new ExampleLayer());
     }
 
     ~Playground()

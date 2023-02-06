@@ -46,13 +46,11 @@ namespace hazel
 
         LayerStack m_LayerStack;
 
-        std::shared_ptr<Shader> m_Shader;
-        std::shared_ptr<VertexArray> m_VertexArray;
+        float m_LastFrameTime = 0.0f;
 
-        std::shared_ptr<Shader> m_BlueShader;
-        std::shared_ptr<VertexArray> m_SquareVA;
+        
 
-        OrthographicCamera m_Camera;
+
     };
 
     Application *CreateApplication();

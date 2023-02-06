@@ -9,6 +9,7 @@
 #include <MyLogger.h>
 
 #include <Buffer.h>
+#include <VertexArray.h>
 
 #include <glm/vec3.hpp>                 // glm::vec3
 #include <glm/vec4.hpp>                 // glm::vec4
@@ -39,31 +40,57 @@ namespace hazel
         m_ImGuiLayer = new ImGuiLayer();
         PushLayer(m_ImGuiLayer);
 
-        glGenVertexArrays(1, &m_VertexArray);
-        glBindVertexArray(m_VertexArray);
+        m_VertexArray.reset(VertexArray::Create());
 
-        float vertices[3 * 3] = {
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.0f, 0.5f, 0.0f};
-        m_VertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+        float vertices[] = {
+            -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
+            0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
+            0.0f, 0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f};
+        std::shared_ptr<VertexBuffer> vertexBuffer;
+        vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
+        {
+            BufferLayout layout = {
+                {ShaderDataType::Float3, "a_Position", 0},
+                {ShaderDataType::Float4, "a_Color", 1}};
 
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+            vertexBuffer->SetLayout(layout);
+        }
+        m_VertexArray->AddVertexBuffer(vertexBuffer);
 
         unsigned int indices[3] = {0, 1, 2};
-        m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices)/sizeof(indices[0])));
+        std::shared_ptr<IndexBuffer> indexBuffer;
+        indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(indices[0])));
+        m_VertexArray->SetIndexBuffer(indexBuffer);
+
+        m_SquareVA.reset(VertexArray::Create());
+
+        float squareVertices[3 * 4] = {
+            -0.75f, -0.75f, 0.0f,
+            0.75f, -0.75f, 0.0f,
+            0.75f, 0.75f, 0.0f,
+            -0.75f, 0.75f, 0.0f};
+
+        std::shared_ptr<VertexBuffer> squareVB;
+        squareVB.reset(VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+        squareVB->SetLayout({{ShaderDataType::Float3, "a_Position", 0}});
+        m_SquareVA->AddVertexBuffer(squareVB);
+
+        uint32_t squareIndices[6] = {0, 1, 2, 2, 3, 0};
+        std::shared_ptr<IndexBuffer> squareIB;
+        squareIB.reset(IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(squareIndices[0])));
+        m_SquareVA->SetIndexBuffer(squareIB);
 
         std::string vertexSrc = R"(
             #version 410 core
             
             layout(location = 0) in vec3 a_Position;
+            layout(location = 1) in vec4 a_Color;
 
-            out vec3 v_Position;
+            out vec4 v_Color;
 
             void main()
             {
-                v_Position = a_Position;
+                v_Color = a_Color;
                 gl_Position = vec4(a_Position, 1.0);
             }
         )";
@@ -73,15 +100,39 @@ namespace hazel
             
             out vec4 v_FragColor;
 
-            in vec3 v_Position;
+            in vec4 v_Color;
 
             void main()
             {
-                v_FragColor = vec4(v_Position * 0.5 + 0.5, 1.0);
+                v_FragColor = v_Color;
             }
         )";
 
         m_Shader.reset(new Shader(vertexSrc, fragmentSrc));
+
+        std::string blueShaderVertexSrc = R"(
+            #version 410 core
+            
+            layout(location = 0) in vec3 a_Position;
+
+            void main()
+            {
+                gl_Position = vec4(a_Position, 1.0);	
+            }
+        )";
+
+        std::string blueShaderFragmentSrc = R"(
+            #version 410 core
+            
+            out vec4 color;
+
+            void main()
+            {
+                color = vec4(0.2, 0.3, 0.8, 1.0);
+            }
+        )";
+
+        m_BlueShader.reset(new Shader(blueShaderVertexSrc, blueShaderFragmentSrc));
     }
 
     Application::~Application()
@@ -95,16 +146,13 @@ namespace hazel
             glClearColor(0.12f, 0.12f, 0.12f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            m_Shader->Bind();
+            m_BlueShader->Bind();
+            m_SquareVA->Bind();
+            glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 
-            glBindVertexArray(m_VertexArray);
-            int error = glGetError();
-            glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
-            error = glGetError();
-            if (error != GL_NO_ERROR)
-            {
-                MYLOG_ERROR("{0}", error);
-            }
+            m_Shader->Bind();
+            m_VertexArray->Bind();
+            glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
 
             for (Layer *layer : m_LayerStack)
             {

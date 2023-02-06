@@ -9,8 +9,8 @@
 #include <MouseEvent.h>
 
 #include <LayerStack.h>
-
 #include <ImguiLayer.h>
+#include <Shader.h>
 
 namespace hazel
 {
@@ -41,6 +41,10 @@ namespace hazel
         static const Application *s_app;
 
         LayerStack m_LayerStack;
+
+        unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
+
+        std::unique_ptr<Shader> m_Shader;
     };
 
     Application *CreateApplication();

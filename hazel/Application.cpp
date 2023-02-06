@@ -18,21 +18,12 @@
 #include <glm/mat4x4.hpp>               // glm::mat4
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
 
-glm::mat4 camera(float Translate, glm::vec2 const &Rotate)
-{
-    glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.f);
-    glm::mat4 View = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -Translate));
-    View = glm::rotate(View, Rotate.y, glm::vec3(-1.0f, 0.0f, 0.0f));
-    View = glm::rotate(View, Rotate.x, glm::vec3(0.0f, 1.0f, 0.0f));
-    glm::mat4 Model = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f));
-    return Projection * View * Model;
-}
-
 namespace hazel
 {
     const Application *Application::s_app = nullptr;
 
     Application::Application()
+        : m_Camera(-1.6f, 1.6f, -0.9f, 0.9f)
     {
         s_app = this;
         m_Window = std::unique_ptr<Window>(Window::Create());
@@ -90,10 +81,12 @@ namespace hazel
 
             out vec4 v_Color;
 
+            uniform mat4 u_ViewProjection;
+
             void main()
             {
                 v_Color = a_Color;
-                gl_Position = vec4(a_Position, 1.0);
+                gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
             }
         )";
 
@@ -117,9 +110,11 @@ namespace hazel
             
             layout(location = 0) in vec3 a_Position;
 
+            uniform mat4 u_ViewProjection;
+
             void main()
             {
-                gl_Position = vec4(a_Position, 1.0);	
+                gl_Position = u_ViewProjection * vec4(a_Position, 1.0);	
             }
         )";
 
@@ -141,17 +136,15 @@ namespace hazel
     {
         while (m_Running)
         {
-            RenderCommand::SetClearColor(glm::vec4(0.12f, 0.12f, 0.12f, 1.0f));
+            RenderCommand::SetClearColor({0.12f, 0.12f, 0.12f, 1.0f});
             RenderCommand::Clear();
 
-            Renderer::BeginScene();
+            m_Camera.SetPosition({0.5f, 0.5f, 0.0f});
+            m_Camera.SetRotation(45.0f);
 
-            m_BlueShader->Bind();
-            Renderer::Submit(m_SquareVA);
-
-            m_Shader->Bind();
-            Renderer::Submit(m_VertexArray);
-
+            Renderer::BeginScene(m_Camera);
+            Renderer::Submit(m_BlueShader, m_SquareVA);
+            Renderer::Submit(m_Shader, m_VertexArray);
             Renderer::EndScene();
 
             for (Layer *layer : m_LayerStack)

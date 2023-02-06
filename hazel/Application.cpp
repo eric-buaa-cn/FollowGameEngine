@@ -135,10 +135,6 @@ namespace hazel
         m_BlueShader.reset(new Shader(blueShaderVertexSrc, blueShaderFragmentSrc));
     }
 
-    Application::~Application()
-    {
-    }
-
     void Application::Run()
     {
         while (m_Running)

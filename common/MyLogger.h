@@ -31,3 +31,4 @@ public:
 #define MYLOG_INFO(...) SPDLOG_INFO(__VA_ARGS__)
 #define MYLOG_WARN(...) SPDLOG_WARN(__VA_ARGS__)
 #define MYLOG_ERROR(...) SPDLOG_ERROR(__VA_ARGS__)
+#define MYLOG_CRITICAL(...) SPDLOG_CRITICAL(__VA_ARGS__)

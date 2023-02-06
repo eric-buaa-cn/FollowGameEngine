@@ -12,6 +12,8 @@
 #include <ImguiLayer.h>
 #include <Shader.h>
 
+#include <Buffer.h>
+
 namespace hazel
 {
     class Application
@@ -42,7 +44,9 @@ namespace hazel
 
         LayerStack m_LayerStack;
 
-        unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
+        unsigned int m_VertexArray;
+        std::unique_ptr<VertexBuffer> m_VertexBuffer;
+        std::unique_ptr<IndexBuffer> m_IndexBuffer;
 
         std::unique_ptr<Shader> m_Shader;
     };

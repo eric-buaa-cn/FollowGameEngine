@@ -39,7 +39,7 @@ public:
             -0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
             0.5f, -0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
             0.0f, 0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f};
-        std::shared_ptr<hazel::VertexBuffer> vertexBuffer;
+        hazel::Ref<hazel::VertexBuffer> vertexBuffer;
         vertexBuffer.reset(hazel::VertexBuffer::Create(vertices, sizeof(vertices)));
         {
             hazel::BufferLayout layout = {
@@ -51,7 +51,7 @@ public:
         m_VertexArray->AddVertexBuffer(vertexBuffer);
 
         unsigned int indices[3] = {0, 1, 2};
-        std::shared_ptr<hazel::IndexBuffer> indexBuffer;
+        hazel::Ref<hazel::IndexBuffer> indexBuffer;
         indexBuffer.reset(hazel::IndexBuffer::Create(indices, sizeof(indices) / sizeof(indices[0])));
         m_VertexArray->SetIndexBuffer(indexBuffer);
 
@@ -63,13 +63,13 @@ public:
             0.5f, 0.5f, 0.0f,
             -0.5f, 0.5f, 0.0f};
 
-        std::shared_ptr<hazel::VertexBuffer> squareVB;
+        hazel::Ref<hazel::VertexBuffer> squareVB;
         squareVB.reset(hazel::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
         squareVB->SetLayout({{hazel::ShaderDataType::Float3, "a_Position", 0}});
         m_SquareVA->AddVertexBuffer(squareVB);
 
         uint32_t squareIndices[6] = {0, 1, 2, 2, 3, 0};
-        std::shared_ptr<hazel::IndexBuffer> squareIB;
+        hazel::Ref<hazel::IndexBuffer> squareIB;
         squareIB.reset(hazel::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(squareIndices[0])));
         m_SquareVA->SetIndexBuffer(squareIB);
 
@@ -170,11 +170,11 @@ public:
 
 private:
     hazel::OrthographicCamera m_Camera;
-    std::shared_ptr<hazel::Shader> m_Shader;
-    std::shared_ptr<hazel::VertexArray> m_VertexArray;
+    hazel::Ref<hazel::Shader> m_Shader;
+    hazel::Ref<hazel::VertexArray> m_VertexArray;
 
-    std::shared_ptr<hazel::Shader> m_flatColorShader;
-    std::shared_ptr<hazel::VertexArray> m_SquareVA;
+    hazel::Ref<hazel::Shader> m_flatColorShader;
+    hazel::Ref<hazel::VertexArray> m_SquareVA;
 
     glm::vec3 m_SquareColor = {0.2f, 0.3f, 0.8f};
 };

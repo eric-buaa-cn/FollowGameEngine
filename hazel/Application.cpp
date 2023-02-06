@@ -25,7 +25,7 @@ namespace hazel
     Application::Application()
     {
         s_app = this;
-        m_Window = std::unique_ptr<Window>(Window::Create());
+        m_Window = Scope<Window>(Window::Create());
 
         m_Window->SetEventCallback(HZ_BIND_EVENT_FN(Application::OnEvent));
 

@@ -34,11 +34,15 @@ target_link_libraries(common PUBLIC
 file(GLOB HAZEL_SRC_FILES
     ${PROJECT_SOURCE_DIR}/hazel/*.cpp
     ${PROJECT_SOURCE_DIR}/hazel/imgui/*.cpp
+    ${PROJECT_SOURCE_DIR}/hazel/vendor/stb_image/*.cpp
+    ${PROJECT_SOURCE_DIR}/hazel/Renderer/*.cpp
 )
 add_library(hazel ${HAZEL_SRC_FILES})
 target_include_directories(hazel
     PUBLIC ${PROJECT_SOURCE_DIR}/hazel
+    PUBLIC ${PROJECT_SOURCE_DIR}/hazel/Renderer
     PUBLIC ${PROJECT_SOURCE_DIR}/hazel/imgui
+    PUBLIC ${PROJECT_SOURCE_DIR}/hazel/vendor/stb_image
 )
 target_link_libraries(hazel PUBLIC
     glad::glad

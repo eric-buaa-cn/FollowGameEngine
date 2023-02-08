@@ -19,3 +19,4 @@ Hazel.h is the header file for client to include.
 #include <VertexArray.h>
 #include <OrthoGraphicCamera.h>
 #include <Renderer.h>
+#include <Texture.h>

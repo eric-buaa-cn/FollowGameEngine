@@ -78,107 +78,13 @@ public:
         squareIB.reset(hazel::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(squareIndices[0])));
         m_SquareVA->SetIndexBuffer(squareIB);
 
-        std::string vertexSrc = R"(
-            #version 410 core
-            
-            layout(location = 0) in vec3 a_Position;
-            layout(location = 1) in vec4 a_Color;
+        m_TextureShader.reset(hazel::Shader::Create("playground/assets/shaders/TextureShader.glsl"));
+        m_flatColorShader.reset(hazel::Shader::Create("playground/assets/shaders/FlatColorshader.glsl"));
 
-            out vec4 v_Color;
-
-            uniform mat4 u_ViewProjection;
-            uniform mat4 u_Transform;
-
-            void main()
-            {
-                v_Color = a_Color;
-                gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
-            }
-        )";
-
-        std::string fragmentSrc = R"(
-            #version 410 core
-            
-            out vec4 v_FragColor;
-
-            in vec4 v_Color;
-
-            void main()
-            {
-                v_FragColor = v_Color;
-            }
-        )";
-
-        m_Shader.reset(hazel::Shader::Create(vertexSrc, fragmentSrc));
-
-        std::string flatColorShaderVertexSrc = R"(
-            #version 410 core
-            
-            layout(location = 0) in vec3 a_Position;
-
-            uniform mat4 u_ViewProjection;
-            uniform mat4 u_Transform;
-
-            void main()
-            {
-                gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
-            }
-        )";
-
-        std::string flatColorShaderFragmentSrc = R"(
-            #version 410 core
-            
-            out vec4 color;
-
-            uniform vec3 u_Color;
-
-            void main()
-            {
-                color = vec4(u_Color, 1.0);
-            }
-        )";
-
-        m_flatColorShader.reset(hazel::Shader::Create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
-
-        std::string textureShaderVertexSrc = R"(
-            #version 410 core
-            
-            layout(location = 0) in vec3 a_Position;
-            layout(location = 1) in vec2 a_TexCoord;
-
-            out vec2 v_TexCoord;
-
-            uniform mat4 u_ViewProjection;
-            uniform mat4 u_Transform;
-
-            void main()
-            {
-                v_TexCoord = a_TexCoord;
-                gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);	
-            }
-        )";
-
-        std::string textureShaderFragmentSrc = R"(
-            #version 410 core
-            
-            out vec4 color;
-
-            in vec2 v_TexCoord;
-
-            uniform sampler2D u_Texture;
-
-            void main()
-            {
-                color = texture(u_Texture, v_TexCoord);
-            }
-        )";
-
-        m_TextureShader.reset(hazel::Shader::Create(textureShaderVertexSrc, textureShaderFragmentSrc));
         m_TextureCheckerBoard = hazel::Texture2D::Create("playground/assets/textures/Checkerboard.png");
+        m_TextureCheckerBoard->Bind(0);
         m_TextureChernoLogo = hazel::Texture2D::Create("playground/assets/textures/ChernoLogo.png");
-
-        std::dynamic_pointer_cast<hazel::OpenGLShader>(m_TextureShader)->Bind();
-        std::dynamic_pointer_cast<hazel::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
+        m_TextureChernoLogo->Bind(1);
     }
 
     void OnUpdate(hazel::Timestep ts) override
@@ -202,12 +108,6 @@ public:
             }
         }
 
-        std::dynamic_pointer_cast<hazel::OpenGLShader>(m_flatColorShader)->UploadUniformFloat3("u_Color", m_ColorYellow);
-        hazel::Renderer::Submit(m_flatColorShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
-
-        m_TextureCheckerBoard->Bind(0);
-        m_TextureChernoLogo->Bind(1);
-
         std::dynamic_pointer_cast<hazel::OpenGLShader>(m_TextureShader)->Bind();
         std::dynamic_pointer_cast<hazel::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 1);
         hazel::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
@@ -222,7 +122,6 @@ public:
 
 private:
     hazel::OrthographicCamera m_Camera;
-    hazel::Ref<hazel::Shader> m_Shader;
     hazel::Ref<hazel::VertexArray> m_VertexArray;
 
     hazel::Ref<hazel::Shader> m_flatColorShader;
